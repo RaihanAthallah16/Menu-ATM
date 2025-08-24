@@ -1,0 +1,212 @@
+#include <iostream>
+#include <iomanip>
+#include <string>
+using namespace std;
+
+struct Nasabah {
+    string nama;
+    string alamat;
+    long int norek;
+    double saldo;
+};
+
+Nasabah nasabah[50];
+int n = 0; 
+
+void daftarNasabah();
+void setorTunai();
+void tarikTunai();
+void cetakDaftar();
+void cariNasabah();
+
+int main() {
+    int pilihan;
+    bool running = true;
+
+    while (running) {
+        system("cls"); 
+
+        cout << " __________________________________________ " << endl;
+        cout << "|     Bank Masa Depan Raihan			    |" << endl;
+        cout << "|__________________________________________|" << endl;
+        cout << "|______________Menu Transaksi______________|" << endl;
+        cout << "|   1. Pendaftaran Nasabah                 |" << endl;
+        cout << "|   2. Setor Tunai                         |" << endl;
+        cout << "|   3. Tarik Tunai                         |" << endl;
+        cout << "|   4. Cetak Daftar Nasabah                |" << endl;
+        cout << "|   5. Cari Nasabah                        |" << endl;
+        cout << "|   6. Keluar                              |" << endl;
+        cout << "|__________________________________________|" << endl;
+        cout << "  Pilihan Anda: ";
+        cin >> pilihan;
+
+        switch (pilihan) {
+            case 1: daftarNasabah(); break;
+            case 2: setorTunai(); break;
+            case 3: tarikTunai(); break;
+            case 4: cetakDaftar(); break;
+            case 5: cariNasabah(); break;
+            case 6:
+                cout << "\nTerima Kasih Telah Bertransaksi Di Sini.\n" << endl;
+                running = false;
+                break;
+            default:
+                cout << "\nPilihan tidak valid. Coba lagi.\n";
+                system("pause");
+        }
+    }
+
+    return 0;
+}
+
+
+void daftarNasabah() {
+    long int no;
+    bool ketemu = false;
+
+    cout << "\n================= Pendaftaran Nasabah =================\n";
+    cout << "Masukkan Nomor Rekening: ";
+    cin >> no;
+
+    for (int i = 0; i < n; i++) {
+        if (nasabah[i].norek == no) {
+            ketemu = true;
+            break;
+        }
+    }
+
+    if (ketemu) {
+        cout << "Nomor Rekening sudah ada. Coba lagi.\n";
+    } else {
+        nasabah[n].norek = no;
+        cout << "Masukkan Nama Anda     : ";
+        cin.ignore();
+        getline(cin, nasabah[n].nama);
+        cout << "Masukkan Alamat        : ";
+        getline(cin, nasabah[n].alamat);
+        cout << "Masukkan Saldo Awal    : Rp. ";
+        cin >> nasabah[n].saldo;
+        n++;
+        cout << "Pendaftaran Berhasil.\n";
+    }
+
+    system("pause");
+}
+
+void setorTunai() {
+    long int no;
+    double setor;
+    bool ketemu = false;
+    int pos;
+
+    cout << "\n==================== Setor Tunai ======================\n";
+    cout << "Masukkan Nomor Rekening: ";
+    cin >> no;
+
+    for (int i = 0; i < n; i++) {
+        if (nasabah[i].norek == no) {
+            ketemu = true;
+            pos = i;
+            break;
+        }
+    }
+
+    if (ketemu) {
+        cout << "Masukkan Nominal Setoran: Rp. ";
+        cin >> setor;
+        nasabah[pos].saldo += setor;
+        cout << "Setoran Berhasil. Saldo Anda: Rp. " << nasabah[pos].saldo << endl;
+    } else {
+        cout << "Nomor Rekening tidak ditemukan.\n";
+    }
+
+    system("pause");
+}
+
+void tarikTunai() {
+    long int no;
+    double tarik;
+    bool ketemu = false;
+    int pos;
+
+    cout << "\n==================== Tarik Tunai ======================\n";
+    cout << "Masukkan Nomor Rekening: ";
+    cin >> no;
+
+    for (int i = 0; i < n; i++) {
+        if (nasabah[i].norek == no) {
+            ketemu = true;
+            pos = i;
+            break;
+        }
+    }
+
+    if (ketemu) {
+        cout << "Masukkan Jumlah Penarikan: Rp. ";
+        cin >> tarik;
+        if (tarik <= nasabah[pos].saldo) {
+            nasabah[pos].saldo -= tarik;
+            cout << "Penarikan Berhasil. Sisa Saldo: Rp. " << nasabah[pos].saldo << endl;
+        } else {
+            cout << "Saldo tidak mencukupi.\n";
+        }
+    } else {
+        cout << "Nomor Rekening tidak ditemukan.\n";
+    }
+
+    system("pause");
+}
+
+void cetakDaftar() {
+    cout << "\n================ Daftar Nasabah ================\n";
+    cout << left << setw(5) << "No"
+         << setw(15) << "No. Rekening"
+         << setw(20) << "Nama"
+         << setw(20) << "Alamat"
+         << setw(20) << "Saldo (+10%)" << endl;
+
+    cout << "-------------------------------------------------------------\n";
+
+    for (int i = 0; i < n; i++) {
+        double saldoPlusBunga = nasabah[i].saldo * 1.10;
+        cout << left << setw(5) << i + 1
+             << setw(15) << nasabah[i].norek
+             << setw(20) << nasabah[i].nama
+             << setw(20) << nasabah[i].alamat
+             << "Rp. " << fixed << setprecision(2) << saldoPlusBunga << endl;
+    }
+
+    cout << "\nJumlah saldo di atas termasuk bunga 10%\n";
+    system("pause");
+}
+
+void cariNasabah() {
+    long int no;
+    bool ketemu = false;
+    int pos;
+
+    cout << "\n================= Cari Nasabah ==================\n";
+    cout << "Masukkan Nomor Rekening: ";
+    cin >> no;
+
+    for (int i = 0; i < n; i++) {
+        if (nasabah[i].norek == no) {
+            ketemu = true;
+            pos = i;
+            break;
+        }
+    }
+
+    if (ketemu) {
+        cout << "\nNomor Rekening        : " << nasabah[pos].norek << endl;
+        cout << "Nama                  : " << nasabah[pos].nama << endl;
+        cout << "Alamat                : " << nasabah[pos].alamat << endl;
+        cout << "Saldo                 : Rp. " << nasabah[pos].saldo << endl;
+        cout << "Saldo + Bunga (10%)   : Rp. " << nasabah[pos].saldo * 1.10 << endl;
+    } else {
+        cout << "Nasabah tidak ditemukan.\n";
+    }
+
+    system("pause");
+}
+
